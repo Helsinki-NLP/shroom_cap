@@ -5,7 +5,6 @@ import os
 ROOT = '..'
 os.environ['HF_HOME'] = f'{ROOT}/.hf/'
 os.environ['HF_HUB_CACHE'] = f'{ROOT}/.hf/'
-os.environ['TRANSFORMERS_CACHE'] = f'{ROOT}/.hf/'
 
 import sys
 import random
@@ -99,7 +98,7 @@ def build_prompt(row, lang='english', with_abstract=False):
 logging.set_verbosity_warning()
 records = pd.read_json(Q_FILE, lines=True)
 i = 0
-ncalls=len(records)*2*len(configs)*len(models)
+n_calls = len(records) * 2 * len(CONFIGS) * len(MODELS[YOUR_LANG])
 for model_name in MODELS[YOUR_LANG]:
     model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True).to(device)
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
@@ -116,23 +115,23 @@ for model_name in MODELS[YOUR_LANG]:
             message = [{"role": "user", "content": prompt}]
 
             inputs = tokenizer.apply_chat_template(
-                    message,
-                    add_generation_prompt=True,
-                    return_tensors="pt"
-                ).to(model.device)
-            attention_mask = (inputs != tokenizer.pad_token_id).long().to(model.device)  # vector of ones, basically
+                message,
+                add_generation_prompt=True,
+                return_tensors="pt"
+            ).to(model.device)
+            attention_mask = torch.ones_like(inputs)  # vector of ones because bsz =1
             outputs = model.generate(
-                    inputs,
-                    max_new_tokens=512,
-                    attention_mask=attention_mask,  # transformers complains if this not here
-                    num_return_sequences=1,
-                    eos_token_id=terminators,
-                    pad_token_id=tokenizer.eos_token_id,
-                    return_dict_in_generate=True,
-                    output_logits=True,
-                    do_sample=True,
-                    **config_dict
-                )
+                inputs,
+                max_new_tokens=512,
+                attention_mask=attention_mask,  # transformers complains if this not here
+                num_return_sequences=1,
+                eos_token_id=terminators,
+                pad_token_id=tokenizer.eos_token_id,
+                return_dict_in_generate=True,
+                output_logits=True,
+                do_sample=True,
+                **config_dict
+            )
 
             response = outputs.sequences[0][inputs.shape[-1]:]
             response_text = tokenizer.decode(response, skip_special_tokens=True)
@@ -144,6 +143,7 @@ for model_name in MODELS[YOUR_LANG]:
             row['model_id'] = model_name
             row['model_config'] = config_label
             row['lang'] = YOUR_LANG
+            row['prompt'] = prompt
             row['output_text'] = response_text
             row['output_tokens'] = response_tokens
             row['output_logits'] = response_logits
@@ -153,7 +153,7 @@ for model_name in MODELS[YOUR_LANG]:
                 file.write('\n')
 
             i += 1
-            print(f'prompts done: {i}/{n_calls}') 
-    model, tokenizer = None, None # free mem, for next model
+            print(f'prompts done: {i}/{n_calls}')
+    model, tokenizer = None, None  # free mem, for next model
     del model, tokenizer
     torch.cuda.empty_cache()
