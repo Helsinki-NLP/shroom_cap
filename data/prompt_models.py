@@ -154,3 +154,6 @@ for model_name in MODELS[YOUR_LANG]:
 
             i += 1
             print(f'prompts done: {i}/{n_calls}') 
+    model, tokenizer = None, None # free mem, for next model
+    del model, tokenizer
+    torch.cuda.empty_cache()
