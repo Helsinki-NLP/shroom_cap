@@ -8,8 +8,8 @@ import pandas as pd
 ROOT = '..'
 
 assert len(sys.argv) > 1, "Missing language input argument.\nCall this script using: \n python3 capture_questions.py <your_language>"
-LANG = sys.argv[1].lower()
-OUTFILE = f'{ROOT}/data/{LANG}/questions.jsonl'
+YOUR_LANG = sys.argv[1].lower()
+OUTFILE = f'{ROOT}/data/{YOUR_LANG}/questions.jsonl'
 
 os.makedirs(os.path.dirname(OUTFILE), exist_ok=True)
 db = pd.read_json(f'{ROOT}/data/papers-with-awards.jsonl', lines=True)
@@ -32,11 +32,12 @@ while len(dbout) <= 100:
         # fallback using the paper's doi
         _ = requests.get(f'https://doi.org/{row.doi}')
         rowurl = _.history[-1].url + '.pdf'
-    print(f'Opening article {rowurl} in your browser')
+    print(f'\nOpening article {rowurl} in your browser (rownum: {row.name})')
     webbrowser.open(rowurl)
-    user_input = input(f"Enter a question in {LANG} about the paper that just opened in your browser: ")
+    user_input = input(f"Enter a question IN {YOUR_LANG.upper()} about the paper ({row.title[:15]}...) that just opened in your browser: ")
     if not user_input.lower() in ['exit', 'skip', 'next']:
         row.question = user_input
         row.url = rowurl
-        dbout = dbout.append(row)
+        row_df = pd.DataFrame([row])
+        dbout = pd.concat([dbout, row_df], ignore_index=True)
         dbout.to_json(OUTFILE, orient="records", lines=True)
