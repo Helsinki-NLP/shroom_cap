@@ -6,9 +6,9 @@ With SHROOM-CAP, we want to promote resereach on Scientific Cross-lingual Halluc
 # What you'll find here:
 - `capture_question.py`: script to capture questions, intended to make your life easier. 
 
-_NOTE_: call it giving in the name of the language you are working with (<your_language>) as the first argument (e.g., `capture_questions.py spanish`). This will create a folder with the languge and start filling in the questions. 
+    _NOTE_: call it giving in the name of the language you are working with (<your_language>) as the first argument (e.g., `capture_questions.py spanish`). This will create a folder with the languge and start filling in the questions. 
 
-_NOTE 2_: using the script is optional. If you don't use it, make sure that the `./<your_language>/questions.jsonl` file that you create, has the same structure (check the une in the `./english/` ).
+    _NOTE 2_: using the script is optional. If you don't use it, make sure that the `./<your_language>/questions.jsonl` file that you create, has the same structure (check the une in the `./english/` ).
 - `papers-with-awards.jsonl`: contains the list of ACL anthology papers to serve as reference data
 - `get_awards.py`: scripts used to generate the reference data list (i.e., `papers-with-awards.jsonl`)
 
