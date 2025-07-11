@@ -1,0 +1,91 @@
+import os
+import sys
+import random
+import pathlib
+import argparse
+import pandas as pd
+
+
+def askquestion(row, printfull=True):
+    if printfull:
+        print("QUESTION:   " + row.prompt)
+        print("url:   " + row['url'])
+        print("LLM-OUTPUT: \n\n" + row.output_text + "<END_OF_LLM_OUTPUT> \n\n")
+
+    userans = input(""" Does this output contains fluency mistakes? (options: y/n/minor)
+                    Use 'minor' if the output contains up to 3 minor mistakes like: orthography mistake, missing or misusing punctuation.
+                    Type SAVE to save progress.
+                    Type END to save your answers and come back later.\n>""")
+    userans = userans.strip().lower()
+
+    while userans not in ['y', 'n', 'yes', 'no', 'none', 'm', 'minor', 'end']:
+        print('''ERROR only accepted answers are: y, n, m, yes, no, minor, Y, N, M, YES, NO, MINOR, END, end, End''')
+        userans = askquestion(row, printfull=False)
+
+    userans2 = input(""" Does this output contains hallucinations? (options: y/n)
+                    Type SAVE to save progress.
+                    Type END to save your answers and come back later.\n>""")
+    userans2 = userans2.strip().lower()
+
+    while userans2 not in ['y', 'n', 'yes', 'no', 'none', 'end']:
+        print('''ERROR only accepted answers are: y, n, yes, no, Y, N, M, YES, NO, END, end, End''')
+        userans2 = askquestion(row, printfull=False)
+
+    return userans, userans2
+
+
+def saveprogress(finaldb, outfile, endroutine=False):
+    finaldb.to_csv(outfile, sep='\t')
+    if endroutine:
+        sys.exit()
+
+
+ROOT = '../'
+
+
+def main(args):
+    language = args.language.lower()
+    R_FILE = f'{ROOT}/data/{language}/generated_answers.jsonl'
+    records = pd.read_json(R_FILE, lines=True)
+
+    outfile = f'{ROOT}/data/{language}/annotated_data.jsonl'
+    if not pathlib.Path(outfile).is_file():
+        finaldb = records.reset_index()
+        finaldb['has_fluency_mistakes'] = None
+        finaldb['has_factual_mistakes'] = None
+    else:
+        finaldb = pd.read_csv(outfile, sep='\t', index_col=0)
+        finaldb.to_csv(outfile + '.backup', sep='\t')
+        print(f'INFO: Found started file: {outfile}.')
+
+    qnum = finaldb.has_fluency_mistakes.notna().sum() + 1
+    print(f'INFO: Starting form question number {qnum} of {len(finaldb)}\n')
+    for i in finaldb.index:
+        if not finaldb.has_fluency_mistakes.notna().loc[i]:
+            userans = askquestion(finaldb.loc[i])
+            saveprogress(finaldb, outfile, ('end' in userans))
+
+            finaldb.loc[i, 'has_fluency_mistakes'] = user2ans[userans[0]]
+            finaldb.loc[i, 'has_factual_mistakes'] = user2ans[userans[1]]
+
+    saveprogress(finaldb, outfile)
+
+
+def parse_options():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--language', type=str,
+                        help="Lanuage you will be checking for fluency",
+                        default='English',
+                        )
+
+    args = parser.parse_args()
+    return args
+
+
+global user2ans
+user2ans = {'yes': 'y', 'no': 'n', 'none': 'n', 'minor': 'm', 'y': 'y', 'n': 'n', 'm': 'm'}
+
+
+if __name__ == '__main__':
+    args = parse_options()
+    main(args)
