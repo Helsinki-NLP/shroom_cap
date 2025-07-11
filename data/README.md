@@ -3,7 +3,7 @@ Most probably you are here because you are in charge of creating and annotating 
 
 With SHROOM-CAP, we want to promote resereach on Scientific Cross-lingual Hallucination Detection. For this, we use award-winning ACL papers that were published before the cut off of (most) SOTA LLMs. 
 
-# What's you'll finde here:
+# What you'll find here:
 - `capture_question.py`: script to capture questions, intended to make your life easier. 
 
 _NOTE_: call it giving in the name of the language you are working with as the first argument (e.g., `capture_questions.py spanish`). This will create a folder with the languge and start filling in the questions. 
