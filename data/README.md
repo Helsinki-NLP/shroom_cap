@@ -20,9 +20,15 @@ You are the expert of the language you are in charge of.
 
     - **IMPORTANT:** Consider that the prompt templates will be of the form: _"In the study/article < title > by < authors >, < question >"_, so your questions should fit this template.
 
-2. Use the script <PLACEHOLDER> to prompt 2-3 LLMs with your the questions you just made (stored in `./<your_language>/questions.jsonl`). Use the following steps:
+2. Use the script <PLACEHOLDER> to prompt 2 different LLMs with your the questions you just made (stored in `./<your_language>/questions.jsonl`). Use the following steps:
 
-    - Modify the script to use the LLM of your choice: The LLM should would deliver _good_ results in <your_language>.
+    - Modify the script `prompt_models.py` to use the LLM of your choice: The LLM should would deliver _good_ results in <your_language>.
+        - Modify the dictionary `MODELS` to include {'<your_language>': ["<huggingface_model_1>", "<huggingfacE_model_2>"],
+    'hindi': ["sarvamai/OpenHathi-7B-Hi-v0.1-Base", "nickmalhotra/ProjectIndus"],
+    'french': ["bofenghuang/vigogne-2-13b-chat", "occiglot/occiglot-7b-eu5-instruct"],
+    # add languages as needed
+}
+PROMPT_TEMPLATES = { 
     
     - The script will produce outputs using several sampling configurations, and store them in `./<your_language>/generated_answers.jsonl`
 
