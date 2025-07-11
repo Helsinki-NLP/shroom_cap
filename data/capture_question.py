@@ -1,11 +1,14 @@
 import os
+import sys
 import random
 import requests
 import webbrowser
 import pandas as pd
 
 ROOT = '..'
-LANG = 'spanish'  # change this!
+
+assert len(sys.argv) > 1, "Missing language input argument.\nCall this script using: \n python3 capture_questions.py <your_language>"
+LANG = sys.argv[1].lower()
 OUTFILE = f'{ROOT}/data/{LANG}/questions.jsonl'
 
 os.makedirs(os.path.dirname(OUTFILE), exist_ok=True)
