@@ -99,6 +99,7 @@ def build_prompt(row, lang='english', with_abstract=False):
 logging.set_verbosity_warning()
 records = pd.read_json(Q_FILE, lines=True)
 i = 0
+ncalls=len(records)*2*len(configs)*len(models)
 for model_name in MODELS[YOUR_LANG]:
     model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True).to(device)
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
@@ -152,4 +153,4 @@ for model_name in MODELS[YOUR_LANG]:
                 file.write('\n')
 
             i += 1
-            print(f'prompts done: {i}/160')
+            print(f'prompts done: {i}/{n_calls}') 
