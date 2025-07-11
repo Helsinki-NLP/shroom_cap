@@ -20,21 +20,18 @@ You are the expert of the language you are in charge of.
 
     - **IMPORTANT:** Consider that the prompt templates will be of the form: _"In the study/article < title > by < authors >, < question >"_, so your questions should fit this template.
 
-2. Use the script <PLACEHOLDER> to prompt 2 different LLMs with your the questions you just made (stored in `./<your_language>/questions.jsonl`). Use the following steps:
+2. Use the script `prompt_models.py` to prompt 2 different LLMs with your the questions you just made (stored in `./<your_language>/questions.jsonl`). Use the following steps:
 
     - Modify the script `prompt_models.py` to use the LLM of your choice: The LLM should would deliver _good_ results in <your_language>.
-        - Modify the dictionary `MODELS` to include {'<your_language>': ["<huggingface_model_1>", "<huggingfacE_model_2>"],
-    'hindi': ["sarvamai/OpenHathi-7B-Hi-v0.1-Base", "nickmalhotra/ProjectIndus"],
-    'french': ["bofenghuang/vigogne-2-13b-chat", "occiglot/occiglot-7b-eu5-instruct"],
-    # add languages as needed
-}
-PROMPT_TEMPLATES = { 
-    
+        - Modify the dictionary `MODELS` to include two new models associated to your language: `{'<your_language>': ["<huggingface_model_1>", "<huggingfacE_model_2>"}`
+        - Modify the dictionary `PROMPT_TEMPLATES` to include a new template written in your language. `{'<your_language>': {'prefix': "In the article titled \"{title}\" by {last},{first} {aux}, ", 'abstract': "Here is the article abstract for your reference: {abstract}"    },'}` <- basically, just translate these to `<your_language>`.
+
+    - If the models you use, do NOT follow the template: `message = [{"role": "user", "content": prompt}]`, modify the script accordingly.
     - The script will produce outputs using several sampling configurations, and store them in `./<your_language>/generated_answers.jsonl`
 
-3. Out of all the sampled outputs per question,
-select 1 answer that have a hallucination
-select 1 answer that doesn’t have a hallucination
+3. We will annotate all the 12xnum_questions (12 comes from 2 models, 2 prompts, 3 sampling configurations) outputs with two binary annotations, using the script <PLACEHOLDER>. For each output, the script will show you the prompt, the response text, and will open the article in your brpwser. Use thet to answer the two questions: 
+    - are the outputs fluent? 
+    - does the output contain a hallucination?
 
 4. The scripts produce a file containing the finalized datasets, language experts double check the quality
 
