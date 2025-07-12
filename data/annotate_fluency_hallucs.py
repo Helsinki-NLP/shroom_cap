@@ -29,7 +29,7 @@ def askquestion(row, printfull=True):
 
 
 def saveprogress(finaldb, outfile):
-    finaldb.to_csv(outfile, sep='\t')
+    finaldb.to_json(outfile, orient="records", lines=True)
 
 
 ROOT = '../'
@@ -46,8 +46,8 @@ def main(args):
         finaldb['has_fluency_mistakes'] = None
         finaldb['has_factual_mistakes'] = None
     else:
-        finaldb = pd.read_csv(outfile, sep='\t', index_col=0)
-        finaldb.to_csv(outfile + '.backup', sep='\t')
+        finaldb = pd.read_json(outfile, orient='records', lines=True)
+        saveprogress(finaldb, outfile + '.backup')
         print(f'INFO: Found started file: {outfile}.')
 
     qnum = finaldb.has_fluency_mistakes.notna().sum() + 1
