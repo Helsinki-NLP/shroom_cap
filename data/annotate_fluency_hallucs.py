@@ -1,6 +1,4 @@
-import os
 import sys
-import random
 import pathlib
 import argparse
 import pandas as pd
@@ -13,31 +11,25 @@ def askquestion(row, printfull=True):
         print("LLM-OUTPUT: \n\n" + row.output_text + "<END_OF_LLM_OUTPUT> \n\n")
 
     userans = input(""" Does this output contains fluency mistakes? (options: y/n/minor)
-                    Use 'minor' if the output contains up to 3 minor mistakes like: orthography mistake, missing or misusing punctuation.
-                    Type SAVE to save progress.
-                    Type END to save your answers and come back later.\n>""")
+                    Use 'minor' if the output contains up to 3 minor mistakes like: orthography mistake, missing or misusing punctuation.\n>""")
     userans = userans.strip().lower()
 
-    while userans not in ['y', 'n', 'yes', 'no', 'none', 'm', 'minor', 'end']:
+    while userans not in ['y', 'n', 'yes', 'no', 'none', 'm', 'minor', 'end', 'save']:
         print('''ERROR only accepted answers are: y, n, m, yes, no, minor, Y, N, M, YES, NO, MINOR, END, end, End''')
         userans = askquestion(row, printfull=False)
 
-    userans2 = input(""" Does this output contains hallucinations? (options: y/n)
-                    Type SAVE to save progress.
-                    Type END to save your answers and come back later.\n>""")
+    userans2 = input(""" Does this output contains hallucinations? (options: y/n).\n>""")
     userans2 = userans2.strip().lower()
 
-    while userans2 not in ['y', 'n', 'yes', 'no', 'none', 'end']:
+    while userans2 not in ['y', 'n', 'yes', 'no', 'none', 'end', 'save']:
         print('''ERROR only accepted answers are: y, n, yes, no, Y, N, M, YES, NO, END, end, End''')
         userans2 = askquestion(row, printfull=False)
 
     return userans, userans2
 
 
-def saveprogress(finaldb, outfile, endroutine=False):
+def saveprogress(finaldb, outfile):
     finaldb.to_csv(outfile, sep='\t')
-    if endroutine:
-        sys.exit()
 
 
 ROOT = '../'
@@ -46,7 +38,7 @@ ROOT = '../'
 def main(args):
     language = args.language.lower()
     R_FILE = f'{ROOT}/data/{language}/generated_answers.jsonl'
-    records = pd.read_json(R_FILE, lines=True)
+    records = pd.read_json(R_FILE, orient='records', lines=True)
 
     outfile = f'{ROOT}/data/{language}/annotated_data.jsonl'
     if not pathlib.Path(outfile).is_file():
@@ -63,10 +55,9 @@ def main(args):
     for i in finaldb.index:
         if not finaldb.has_fluency_mistakes.notna().loc[i]:
             userans = askquestion(finaldb.loc[i])
-            saveprogress(finaldb, outfile, ('end' in userans))
-
             finaldb.loc[i, 'has_fluency_mistakes'] = user2ans[userans[0]]
             finaldb.loc[i, 'has_factual_mistakes'] = user2ans[userans[1]]
+            saveprogress(finaldb, outfile)
 
     saveprogress(finaldb, outfile)
 
