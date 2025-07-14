@@ -23,8 +23,8 @@ else:
 
 while len(dbout) <= 100:
     print(f'Recording Q {len(dbout)+1}/100')
-    idx = random.randint(0, len(db))
-    row = db.iloc[idx].copy()
+    idx = random.randint(0, (~db.abstract.isna()).sum() - len(dbout))
+    row = db[~db.title.isin(set(dbout.title)) & ~db.abstract.isna()].iloc[idx].copy()
     _ = requests.get(row.url)
     if row.url and _.status_code == 200 and not ('github' in row.url):
         rowurl = row.url
