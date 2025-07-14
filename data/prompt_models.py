@@ -29,7 +29,7 @@ OUT_FILE = f'{ROOT}/data/{YOUR_LANG}/generated_answers.jsonl'
 
 MODELS = {
     'spanish': ["Iker/Llama-3-Instruct-Neurona-8b-v2", "meta-llama/Meta-Llama-3-8B-Instruct"],
-    'hindi': ["sarvamai/OpenHathi-7B-Hi-v0.1-Base", "nickmalhotra/ProjectIndus"],
+    'hindi': ["nickmalhotra/ProjectIndus" ,"meta-llama/Meta-Llama-3-8B-Instruct"], #"google/gemma-7b"], #["nickmalhotra/ProjectIndus", "sarvamai/OpenHathi-7B-Hi-v0.1-Base"],
     'french': ["bofenghuang/vigogne-2-13b-chat", "occiglot/occiglot-7b-eu5-instruct"],
     # add languages as needed
 }
