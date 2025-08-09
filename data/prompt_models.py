@@ -53,7 +53,7 @@ PROMPT_TEMPLATES = {
     },
     'italian': {
         'prefix': "Nell'articolo intitolato \"{title}\" scritto da {first} {last}{aux}, ",
-        'abstract': "Ecco la parte iniziale dell'abstract, da usare come riferimento: {}"
+        'abstract': "Ecco la parte iniziale dell'abstract, da usare come riferimento: {abstract}"
     }
     # add languages as needed
 }
