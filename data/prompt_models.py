@@ -31,7 +31,7 @@ MODELS = {
     'spanish': ["Iker/Llama-3-Instruct-Neurona-8b-v2", "meta-llama/Meta-Llama-3-8B-Instruct"],
     'hindi': ["nickmalhotra/ProjectIndus" ,"meta-llama/Meta-Llama-3-8B-Instruct"], #"google/gemma-7b"], #["nickmalhotra/ProjectIndus", "sarvamai/OpenHathi-7B-Hi-v0.1-Base"],
     'french': ["bofenghuang/vigogne-2-13b-chat", "occiglot/occiglot-7b-eu5-instruct", "meta-llama/Meta-Llama-3-8B-Instruct"],
-    'italian': ["meta-llama/Meta-Llama-3.1-8B-Instruct", "Qwen/Qwen2-7B-Instruct", "rstless-research/DanteLLM-7B-Instruct-Italian-v0.1", "sapienzanlp/modello-italia-9b"],
+    'italian': ["google/gemma-2-9b-it", "meta-llama/Meta-Llama-3.1-8B-Instruct", "sapienzanlp/modello-italia-9b"],
     # add languages as needed
 }
 PROMPT_TEMPLATES = {
@@ -52,9 +52,9 @@ PROMPT_TEMPLATES = {
         'abstract': "यहाँ एक संक्षिप्त विवरण है, जहाँ आप संदर्भ के रूप में उपयोग कर सकते हैं: {abstract}"
     },
     'italian': {
-        'prefix': "Nell'articolo intitolato \"{title}\" scritto da {first} {last}{aux}, ",
+        'prefix': "Nell'articolo intitolato \"{title}\" scritto da {first} {last} {aux}, ",
         'abstract': "Ecco la parte iniziale dell'abstract, da usare come riferimento: {abstract}"
-    }
+    },
     # add languages as needed
 }
 
