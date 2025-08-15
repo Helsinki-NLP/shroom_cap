@@ -65,6 +65,10 @@ PROMPT_TEMPLATES = {
         'prefix' : "{last},{first} {aux} എഴുതിയ \"{title}\" എന്ന ലേഖനത്തിൽ." ,
         'abstract': "നിങ്ങളുടെ റഫറൻസിനായി ലേഖന സംഗ്രഹത്തിന്റെ തുടക്കം ഇതാ.: {abstract} "
     },
+    'telugu':{
+        'prefix': "\"{title}\" అనే శీర్షికతో {last},{first} {aux} రాసిన రచనలో, ",
+        'abstract': "మీ సూచన కోసం ప్రబంధ సారాంశం ఇక్కడ ఇవ్వబడింది: {abstract}"
+    },
     # add languages as needed
 }
 
