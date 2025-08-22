@@ -95,7 +95,7 @@ def build_prompt(row, lang='english', with_abstract=False):
 
     if with_abstract:
         if not (row.abstract is None):
-            prompt += " " + template['abstract'].format(abstract=row.abstract)[:250]
+            prompt += " " + template['abstract'].format(abstract=row.abstract)[:500]
 
     return prompt
 
