@@ -1,4 +1,5 @@
 import sys
+import random
 import pathlib
 import argparse
 import pandas as pd
@@ -35,6 +36,17 @@ def saveprogress(finaldb, outfile):
 ROOT = '../'
 
 
+def check_condition(db, i):
+    # CHECK IF THE OUTPUT HAS BEEN ANNOTATED ALREADY
+    C1 = db.has_fluency_mistakes.isna().loc[i]
+    current_db = db[(db.title == db.iloc[i].title) & (db.prompt == db.iloc[i].prompt)] # & (db.model_id == db.iloc[i].model_id)]
+    # MAKE SURE THAT WE SAMPLE TO OUTPUTS PER PROMPT:
+    C2 = current_db.has_fluency_mistakes.notna().sum() <= 2
+    C3 = current_db.has_factual_mistakes.notna().sum() <= 2
+    # annotate if all three conditions are True
+    return C1 and C2 and C3
+
+
 def main(args):
     language = args.language.lower()
     R_FILE = f'{ROOT}/data/{language}/generated_answers.jsonl'
@@ -52,8 +64,9 @@ def main(args):
 
     qnum = finaldb.has_fluency_mistakes.notna().sum() + 1
     print(f'INFO: Starting form question number {qnum} of {len(finaldb)}\n')
-    for i in finaldb.index:
-        if not finaldb.has_fluency_mistakes.notna().loc[i]:
+    random_ids = random.sample(range(0, len(finaldb.index)), len(finaldb.index))
+    for i in random_ids:
+        if check_condition(finaldb, i):
             userans = askquestion(finaldb.loc[i])
             finaldb.loc[i, 'has_fluency_mistakes'] = user2ans[userans[0]]
             finaldb.loc[i, 'has_factual_mistakes'] = user2ans[userans[1]]
