@@ -39,7 +39,7 @@ ROOT = '../'
 def check_condition(db, i):
     # CHECK IF THE OUTPUT HAS BEEN ANNOTATED ALREADY
     C1 = db.has_fluency_mistakes.isna().loc[i]
-    current_db = db[(db.title == db.iloc[i].title) & (db.prompt == db.iloc[i].prompt)] # & (db.model_id == db.iloc[i].model_id)]
+    current_db = db[(db.question == db.iloc[i].question) & (db.prompt == db.iloc[i].prompt)] #ndb. & (db.model_id == db.iloc[i].model_id)]
     # MAKE SURE THAT WE SAMPLE TO OUTPUTS PER PROMPT:
     C2 = current_db.has_fluency_mistakes.notna().sum() <= 2
     C3 = current_db.has_factual_mistakes.notna().sum() <= 2
