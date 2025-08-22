@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from datetime import datetime
 
 from . import models, services, scorer
+import json
 
 
 class UserAndPreferencesCreationForm(auth_forms.UserCreationForm):
@@ -29,17 +30,16 @@ class MultipleFileInput(forms.ClearableFileInput):
 
 
 def _check_aligned(pdict, rdict, fname):
-    if pdict['id'] != rdict['datapoint_id']:
-        raise ValidationError(f'IDs are not correctly aligned in {fname}: {pdict["id"]} != {rdict["datapoint_id"]}')
+    if pdict['index'] != rdict['datapoint_id']:
+        raise ValidationError(f'IDs are not correctly aligned in {fname}: {pdict["index"]} != {rdict["datapoint_id"]}')
     if pdict["has_factual_mistakes"].lower() not in 'yn':
         raise ValidationError(f'Factuality predictions should be one of `y` or `n`, but {pdict["id"]} in {fname} has `{pdict["has_factual_mistakes"]}`')
     if pdict["has_fluency_mistakes"].lower() not in 'yn':
-        raise ValidationError(f'Fluency predictions should be one of `y` or `n`, but {pdict["id"]} in {fname} has `{pdict["has_fluency_mistakes"]}`')
+        raise ValidationError(f'Fluency predictions should be one of `y` or `n`, but {pdict["index"]} in {fname} has `{pdict["has_fluency_mistakes"]}`')
 
 
 def _load_jsonl_file_to_records(fname):
-    with open(fname, 'r') as istr:
-        return list(map(json.loads, istr))
+    return list(map(json.loads, fname))
 
 
 class MultipleFileField(forms.FileField):
@@ -63,15 +63,15 @@ class MultipleFileField(forms.FileField):
                 pred_dicts = [
                     {
                         key: pdict[key] 
-                        for key in ['id', 'has_factual_mistakes', 'has_fluency_mistakes'] 
+                        for key in ['index', 'has_factual_mistakes', 'has_fluency_mistakes'] 
                         if key in pdict
                     } 
                     for pdict in pred_dicts
                 ]
-                pred_dicts = sorted(pred_dicts, key=lambda pdict: pdict['id'])
+                pred_dicts = sorted(pred_dicts, key=lambda pdict: pdict['index'])
             except Exception as e:
                  raise ValidationError(f"Couldn't parse {fname.name}: {e}")
-            lang, split, _ = pred_dicts[0]['id'].split('-')
+            lang, split, _ = pred_dicts[0]['index'].split('-')
             split, lang = split.upper(), lang.upper()
             if split == 'TST':
                 if settings.TEST_PHASE_START_DATE > datetime.now():
@@ -79,7 +79,7 @@ class MultipleFileField(forms.FileField):
             ref_dicts = services.get_ref_data(split, lang).values()
             for pdict, rdict in zip(pred_dicts, ref_dicts):
                 _check_aligned(pdict, rdict, fname.name)
-            # if not all(pdict['id'] == rdict['id'] for pdict, rdict in zip(pred_dicts, ref_dicts)):
+            # if not all(pdict['index'] == rdict['index'] for pdict, rdict in zip(pred_dicts, ref_dicts)):
             #    raise ValidationError(f'IDs are not correctly aligned in {fname.name}')
             seen_split.add(split)
             if lang in seen_langs:
@@ -87,11 +87,11 @@ class MultipleFileField(forms.FileField):
             seen_langs.add(lang)
             pred_dicts = [
                 {
-                    'datapoint_id': pdict["id"],
+                    'datapoint_id': pdict["index"],
                     'factual': pdict['has_factual_mistakes'].lower() == 'y',
                     'fluent': pdict['has_fluency_mistakes'].lower() == 'y',
-                    'lang': pdict["id"].split('-')[0].upper(),
-                    'split': pdict["id"].split('-')[1].upper(),
+                    'lang': pdict["index"].split('-')[0].upper(),
+                    'split': pdict["index"].split('-')[1].upper(),
                 }
                 for pdict in pred_dicts
             ]

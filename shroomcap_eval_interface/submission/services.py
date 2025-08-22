@@ -53,9 +53,9 @@ def handle_valid_file(pred_dicts, form_dict, profile):
     lang, split, _ = pred_dicts[0]['datapoint_id'].split('-')
     split, lang = split.upper(), lang.upper()
     ref_data = get_ref_data(split, lang)
-    true_factual = ref_data.values_list('factual', flat=True)
+    true_factual = list(ref_data.values_list('factual', flat=True))
     pred_factual = [pdict['factual'] for pdict in pred_dicts]
-    true_fluency = ref_data.values_list('fluent', flat=True)
+    true_fluency = list(ref_data.values_list('fluent', flat=True))
     pred_fluency = [pdict['fluent'] for pdict in pred_dicts]
     scores = scorer.main(true_factual, true_fluency, pred_factual, pred_fluency)
     fact_score = scores['f1_factual_macro']

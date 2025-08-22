@@ -40,7 +40,7 @@ class Submission(models.Model):
 
 
 class DataPoint(models.Model):
-    submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
+    submission = models.ForeignKey(Submission, on_delete=models.CASCADE, blank=True, null=True)
     datapoint_id = models.CharField(max_length=20)
     split = models.CharField(max_length=3, choices=DataSplit.choices)
     language = models.CharField(max_length=2, choices=Language.choices)
