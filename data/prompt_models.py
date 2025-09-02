@@ -32,6 +32,7 @@ MODELS = {
     'hindi': ["nickmalhotra/ProjectIndus" ,"meta-llama/Meta-Llama-3-8B-Instruct"], #"google/gemma-7b"], #["nickmalhotra/ProjectIndus", "sarvamai/OpenHathi-7B-Hi-v0.1-Base"],
     'french': ["bofenghuang/vigogne-2-13b-chat", "occiglot/occiglot-7b-eu5-instruct", "meta-llama/Meta-Llama-3-8B-Instruct"],
     'italian': ["google/gemma-2-9b-it", "meta-llama/Meta-Llama-3.1-8B-Instruct", "sapienzanlp/modello-italia-9b"],
+    'english': ["lmsys/vicuna-7b-v1.5", "meta-llama/Meta-Llama-3-8B-Instruct"],
     # add languages as needed
 }
 PROMPT_TEMPLATES = {
@@ -107,6 +108,11 @@ n_calls = len(records) * 2 * len(CONFIGS) * len(MODELS[YOUR_LANG])
 for model_name in MODELS[YOUR_LANG]:
     model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True).to(device)
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+
+    # to avoid chat_template issues
+    if tokenizer.chat_template is None:
+        tokenizer.chat_template = "{% for message in messages %}{% if message['role'] == 'user' %}{{ 'USER: ' + message['content'] + ' '}}{% elif message['role'] == 'assistant' %}{{ 'ASSISTANT: ' + message['content'] + ' '}}{% endif %}{% endfor %}"
+
     terminators = [
         tokenizer.eos_token_id,
         tokenizer.convert_tokens_to_ids("<|eot_id|>"),
