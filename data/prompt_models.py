@@ -33,6 +33,7 @@ MODELS = {
     'french': ["bofenghuang/vigogne-2-13b-chat", "occiglot/occiglot-7b-eu5-instruct", "meta-llama/Meta-Llama-3-8B-Instruct"],
     'italian': ["google/gemma-2-9b-it", "meta-llama/Meta-Llama-3.1-8B-Instruct", "sapienzanlp/modello-italia-9b"],
     'english': ["lmsys/vicuna-7b-v1.5", "meta-llama/Meta-Llama-3-8B-Instruct"],
+    'bengali': ["BanglaLLM/BanglaLLama-3-8b-bangla-alpaca-orca-instruct-v0.0.1", "BanglaLLM/Bangla-s1k-qwen-2.5-3B-Instruct"]
     # add languages as needed
 }
 PROMPT_TEMPLATES = {
@@ -55,6 +56,10 @@ PROMPT_TEMPLATES = {
     'italian': {
         'prefix': "Nell'articolo intitolato \"{title}\" scritto da {first} {last} {aux}, ",
         'abstract': "Ecco la parte iniziale dell'abstract, da usare come riferimento: {abstract}"
+    },
+     'bengali': {
+        'prefix': "\"{title}\" শিরোনামের লেখায় {last},{first} {aux} দ্বারা, ",
+        'abstract': "এখানে একটি সংক্ষিপ্ত বিবরণ দেওয়া হলো, যা আপনি রেফারেন্স হিসেবে ব্যবহার করতে পারেন।: {abstract}"
     },
     # add languages as needed
 }
@@ -116,7 +121,8 @@ for model_name in MODELS[YOUR_LANG]:
     terminators = [
         tokenizer.eos_token_id,
         tokenizer.convert_tokens_to_ids("<|eot_id|>"),
-    ]
+        ]
+    terminators = [token_id for token_id in terminators if token_id is not None]  # for qwen issue
     for (config_label, config_dict), w_abstract in product(CONFIGS, [False, True]):
         print(f'Prompting: model={model_name}, config={config_label}, prompw_w_abstract={w_abstract}')
         new_records = []
