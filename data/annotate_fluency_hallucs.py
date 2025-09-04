@@ -39,10 +39,10 @@ ROOT = '../'
 def check_condition(db, i):
     # CHECK IF THE OUTPUT HAS BEEN ANNOTATED ALREADY
     C1 = db.has_fluency_mistakes.isna().loc[i]
-    current_db = db[(db.question == db.iloc[i].question) & (db.prompt == db.iloc[i].prompt)] #ndb. & (db.model_id == db.iloc[i].model_id)]
-    # MAKE SURE THAT WE SAMPLE TO OUTPUTS PER PROMPT:
-    C2 = current_db.has_fluency_mistakes.notna().sum() <= 2
-    C3 = current_db.has_factual_mistakes.notna().sum() <= 2
+    current_db = db[(db.question == db.iloc[i].question) & (db.prompt == db.iloc[i].prompt)] & (db.model_id == db.iloc[i].model_id)]
+    # MAKE SURE THAT WE SAMPLE TWO OUTPUTS PER PROMPT, MODEL AND QUESTION:
+    C2 = current_db.has_fluency_mistakes.notna().sum() < 2
+    C3 = current_db.has_factual_mistakes.notna().sum() < 2
     # annotate if all three conditions are True
     return C1 and C2 and C3
 
@@ -71,7 +71,7 @@ def main(args):
             finaldb.loc[i, 'has_fluency_mistakes'] = user2ans[userans[0]]
             finaldb.loc[i, 'has_factual_mistakes'] = user2ans[userans[1]]
             saveprogress(finaldb, outfile)
-
+    print(f'You are done! By now you have annotated 8 outputs per question. If the number of annotations is different than 8 per quesiton, please report it to the organizers (there might be a bug needing FIXES... sorry if this is the case :O) ')
     saveprogress(finaldb, outfile)
 
 
