@@ -35,5 +35,9 @@ You are the expert of the language you are in charge of.
 
 4. The scripts produce a file containing the finalized datasets, language experts double check the quality.
 
-5. Post-processing: use the script `update_index.py` to update the index format in validation data (it has to be e.g. `en-val-0`).
+5. [organizers] Post-processing: use the script `update_index.py` to update the index format in the data (it has to be e.g. `en-valid-0`). Run it as follows:
+
+```
+python update_index.py --language <your_language> --split <train/valid/test/train2>
+```
 
