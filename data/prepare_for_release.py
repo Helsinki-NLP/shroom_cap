@@ -40,6 +40,9 @@ def main():
     if not os.path.exists(input_file):
         print(f"Error: input file {input_file} not found.")
         return
+        
+    indices_data = []
+    indices_label = []
 
     with open(input_file, "r", encoding="utf-8") as infile, \
          open(cleaned_file, "w", encoding="utf-8") as out_clean, \
@@ -84,6 +87,7 @@ def main():
             # Data-only file
             data_copy = {k: v for k, v in data.items() if k not in ["has_fluency_mistakes", "has_factual_mistakes"]}
             out_data.write(json.dumps(data_copy, ensure_ascii=False) + "\n")
+            indices_data.append(data_copy["index"])
 
             # Labels-only file
             label_copy = {
@@ -92,10 +96,15 @@ def main():
                 "has_factual_mistakes": factual_norm
             }
             out_label.write(json.dumps(label_copy, ensure_ascii=False) + "\n")
+            indices_label.append(label_copy["index"])
 
     print(f"Cleaned data written to {cleaned_file}")
     print(f"Data-only file written to {data_file}")
     print(f"Label-only file written to {label_file}")
+    
+    # --- Step 5: Sanity check ---
+    if indices_data != indices_label:
+        raise ValueError("Undex lists of data.jsonl and label.jsonl do not match!")
 
 if __name__ == "__main__":
     main()

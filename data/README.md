@@ -35,9 +35,9 @@ You are the expert of the language you are in charge of.
 
 4. The scripts produce a file containing the finalized datasets, language experts double check the quality.
 
-5. [organizers] Post-processing: use the script `update_index.py` to update the index format in the data (it has to be e.g. `en-valid-0`). Run it as follows:
+5. The script `prepare_for_release.py` prepares the annotation files to be released by updating the index format (e.g. `en-valid-0`), keeping only annotated answers (no null values), preparing separate files for `data` and `label`s, and double-checking that both files have the same index list. It is run as follows:
 
 ```
-python update_index.py --language <your_language> --split <train/valid/test/train2>
+python prepare_for_release.py --language <your_language> --split <train/valid/test/train2>
 ```
 
