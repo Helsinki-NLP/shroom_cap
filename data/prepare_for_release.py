@@ -19,7 +19,7 @@ def normalize_label(value, line_num, field_name):
     return "y" if value == "m" else value
     
 def main():
-    parser = argparse.ArgumentParser(description="Prepares data for relese by fixing indices, cleaning annotated files and splitting data/labels.")
+    parser = argparse.ArgumentParser(description="Prepares data for release by fixing indices, cleaning annotated files and splitting data/labels.")
     parser.add_argument("--language", required=True, help="Language name (e.g., 'spanish').")
     parser.add_argument("--split", required=True, help="Dataset split (e.g., 'train', 'dev', 'test').")
     args = parser.parse_args()
@@ -59,6 +59,8 @@ def main():
                 continue
 
             # --- Step 1: Fix index format ---
+            if split == 'valid':
+                split = 'val'
             expected_prefix = f"{lang}-{split}-"
             if not str(data.get("index", "")).startswith(expected_prefix):
                 data["index"] = f"{expected_prefix}{data['index']}"
