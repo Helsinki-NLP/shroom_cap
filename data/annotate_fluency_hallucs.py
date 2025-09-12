@@ -41,13 +41,13 @@ def check_condition(db, i):
     C1 = db.has_fluency_mistakes.isna().loc[i]
     if db.model_id.unique().size == 2:
         # MAKE SURE THAT WE SAMPLE TWO OUTPUTS PER PROMPT, MODEL AND QUESTION (2^3=8  annotations per question):
-        current_db = db[(db.question == db.iloc[i].question) & (db.prompt == db.iloc[i].prompt) & (db.model_id == db.iloc[i].model_id)] # 3 rows: 3 configs
+        current_db = db[(db.question == db.iloc[i].question) & (db.prompt == db.iloc[i].prompt) & (db.model_id == db.iloc[i].model_id)]  # 3 rows: 3 configs
         C2 = current_db.has_fluency_mistakes.notna().sum() < 2
         C3 = current_db.has_factual_mistakes.notna().sum() < 2
     elif db.model_id.unique().size == 3:
-        # MAKE SURE THAT WE SAMPLE TWO OUTPUTS PER PROMPT ADN QUESTION, THE MODEL BECOMES RANDOM 
+        # MAKE SURE THAT WE SAMPLE TWO OUTPUTS PER PROMPT ADN QUESTION, THE MODEL BECOMES RANDOM
         # to have 8 annotatations per question we need to annotate 4 entries from current_db
-        current_db = db[(db.question == db.iloc[i].question) & (db.prompt == db.iloc[i].prompt)] # 9 rows <- 3models*3configs
+        current_db = db[(db.question == db.iloc[i].question) & (db.prompt == db.iloc[i].prompt)]  # 9 rows <- 3models*3configs
         C2 = current_db.has_fluency_mistakes.notna().sum() < 4
         C3 = current_db.has_factual_mistakes.notna().sum() < 4
     else:
@@ -74,8 +74,18 @@ def main(args):
 
     qnum = finaldb.has_fluency_mistakes.notna().sum() + 1
     print(f'INFO: Starting form question number {qnum} of {len(finaldb)}\n')
-    random_ids = random.sample(range(0, len(finaldb.index)), len(finaldb.index))
-    for i in random_ids:
+
+    # group by article and shuffle within each group
+    grouped = finaldb.groupby(['question'])
+    shuffled_indices = []
+
+    for _, group in grouped:
+        indices = list(group.index)
+        random.shuffle(indices)  # shuffle within the article
+        shuffled_indices.extend(indices)
+
+    # random_ids = random.sample(range(0, len(finaldb.index)), len(finaldb.index))
+    for i in shuffled_indices:
         if check_condition(finaldb, i):
             userans = askquestion(finaldb.loc[i])
             finaldb.loc[i, 'has_fluency_mistakes'] = user2ans[userans[0]]
@@ -108,10 +118,10 @@ if __name__ == '__main__':
     main(args)
 
 
-new_annots=0
+new_annots = 0
 for i in random_ids:
     if check_condition(finaldb, i):
-        userans = ('y','y')
+        userans = ('y', 'y')
         finaldb.loc[i, 'has_fluency_mistakes'] = user2ans[userans[0]]
         finaldb.loc[i, 'has_factual_mistakes'] = user2ans[userans[1]]
         new_annots += 1
