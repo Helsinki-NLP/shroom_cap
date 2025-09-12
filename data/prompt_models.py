@@ -26,11 +26,13 @@ assert len(sys.argv) > 1, "Missing language input argument.\nCall this script us
 YOUR_LANG = sys.argv[1].lower()
 Q_FILE = f"{ROOT}/data/{YOUR_LANG}/questions.jsonl"
 OUT_FILE = f'{ROOT}/data/{YOUR_LANG}/generated_answers.jsonl'
-
 MODELS = {
     'spanish': ["Iker/Llama-3-Instruct-Neurona-8b-v2", "meta-llama/Meta-Llama-3-8B-Instruct"],
     'hindi': ["nickmalhotra/ProjectIndus" ,"meta-llama/Meta-Llama-3-8B-Instruct"], #"google/gemma-7b"], #["nickmalhotra/ProjectIndus", "sarvamai/OpenHathi-7B-Hi-v0.1-Base"],
     'french': ["bofenghuang/vigogne-2-13b-chat", "occiglot/occiglot-7b-eu5-instruct", "meta-llama/Meta-Llama-3-8B-Instruct"],
+    'italian': ["google/gemma-2-9b-it", "meta-llama/Meta-Llama-3.1-8B-Instruct", "sapienzanlp/modello-italia-9b"],
+    'english': ["lmsys/vicuna-7b-v1.5", "meta-llama/Meta-Llama-3-8B-Instruct"],
+    'bengali': ["BanglaLLM/BanglaLLama-3-8b-bangla-alpaca-orca-instruct-v0.0.1", "BanglaLLM/Bangla-s1k-qwen-2.5-3B-Instruct"], 
     'malayalam' : ['VishnuPJ/MalayaLLM_7B_Instruct_v0.2', 'sarvamai/sarvam-1']
     # add languages as needed
 }
@@ -51,12 +53,21 @@ PROMPT_TEMPLATES = {
         'prefix': "\"{title}\" शीर्षक वाले लेख में {last},{first} {aux} द्वारा, ",
         'abstract': "यहाँ एक संक्षिप्त विवरण है, जहाँ आप संदर्भ के रूप में उपयोग कर सकते हैं: {abstract}"
     },
+    'italian': {
+        'prefix': "Nell'articolo intitolato \"{title}\" scritto da {first} {last} {aux}, ",
+        'abstract': "Ecco la parte iniziale dell'abstract, da usare come riferimento: {abstract}"
+    },
+     'bengali': {
+        'prefix': "\"{title}\" শিরোনামের লেখায় {last},{first} {aux} দ্বারা, ",
+        'abstract': "এখানে একটি সংক্ষিপ্ত বিবরণ দেওয়া হলো, যা আপনি রেফারেন্স হিসেবে ব্যবহার করতে পারেন।: {abstract}"
+    },
     'malayalam': {
         'prefix' : "{last},{first} {aux} എഴുതിയ \"{title}\" എന്ന ലേഖനത്തിൽ." ,
         'abstract': "നിങ്ങളുടെ റഫറൻസിനായി ലേഖന സംഗ്രഹത്തിന്റെ തുടക്കം ഇതാ.: {abstract} "
-    }
+    },
     # add languages as needed
 }
+
 
 CONFIGS = [
     ('k50_p0.90_t0.1', dict(top_k=50, top_p=0.90, temperature=0.1)),
