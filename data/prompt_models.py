@@ -26,14 +26,14 @@ assert len(sys.argv) > 1, "Missing language input argument.\nCall this script us
 YOUR_LANG = sys.argv[1].lower()
 Q_FILE = f"{ROOT}/data/{YOUR_LANG}/questions.jsonl"
 OUT_FILE = f'{ROOT}/data/{YOUR_LANG}/generated_answers.jsonl'
-
 MODELS = {
     'spanish': ["Iker/Llama-3-Instruct-Neurona-8b-v2", "meta-llama/Meta-Llama-3-8B-Instruct"],
     'hindi': ["nickmalhotra/ProjectIndus" ,"meta-llama/Meta-Llama-3-8B-Instruct"], #"google/gemma-7b"], #["nickmalhotra/ProjectIndus", "sarvamai/OpenHathi-7B-Hi-v0.1-Base"],
     'french': ["bofenghuang/vigogne-2-13b-chat", "occiglot/occiglot-7b-eu5-instruct", "meta-llama/Meta-Llama-3-8B-Instruct"],
     'italian': ["google/gemma-2-9b-it", "meta-llama/Meta-Llama-3.1-8B-Instruct", "sapienzanlp/modello-italia-9b"],
     'english': ["lmsys/vicuna-7b-v1.5", "meta-llama/Meta-Llama-3-8B-Instruct"],
-    'bengali': ["BanglaLLM/BanglaLLama-3-8b-bangla-alpaca-orca-instruct-v0.0.1", "BanglaLLM/Bangla-s1k-qwen-2.5-3B-Instruct"]
+    'bengali': ["BanglaLLM/BanglaLLama-3-8b-bangla-alpaca-orca-instruct-v0.0.1", "BanglaLLM/Bangla-s1k-qwen-2.5-3B-Instruct"], 
+    'malayalam' : ['VishnuPJ/MalayaLLM_7B_Instruct_v0.2', 'sarvamai/sarvam-1']
     # add languages as needed
 }
 PROMPT_TEMPLATES = {
@@ -60,6 +60,10 @@ PROMPT_TEMPLATES = {
      'bengali': {
         'prefix': "\"{title}\" শিরোনামের লেখায় {last},{first} {aux} দ্বারা, ",
         'abstract': "এখানে একটি সংক্ষিপ্ত বিবরণ দেওয়া হলো, যা আপনি রেফারেন্স হিসেবে ব্যবহার করতে পারেন।: {abstract}"
+    },
+    'malayalam': {
+        'prefix' : "{last},{first} {aux} എഴുതിയ \"{title}\" എന്ന ലേഖനത്തിൽ." ,
+        'abstract': "നിങ്ങളുടെ റഫറൻസിനായി ലേഖന സംഗ്രഹത്തിന്റെ തുടക്കം ഇതാ.: {abstract} "
     },
     # add languages as needed
 }
@@ -104,7 +108,6 @@ def build_prompt(row, lang='english', with_abstract=False):
             prompt += " " + template['abstract'].format(abstract=row.abstract)[:500]
 
     return prompt
-
 
 logging.set_verbosity_warning()
 records = pd.read_json(Q_FILE, lines=True)
