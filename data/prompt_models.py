@@ -31,6 +31,7 @@ MODELS = {
     'spanish': ["Iker/Llama-3-Instruct-Neurona-8b-v2", "meta-llama/Meta-Llama-3-8B-Instruct"],
     'hindi': ["nickmalhotra/ProjectIndus" ,"meta-llama/Meta-Llama-3-8B-Instruct"], #"google/gemma-7b"], #["nickmalhotra/ProjectIndus", "sarvamai/OpenHathi-7B-Hi-v0.1-Base"],
     'french': ["bofenghuang/vigogne-2-13b-chat", "occiglot/occiglot-7b-eu5-instruct", "meta-llama/Meta-Llama-3-8B-Instruct"],
+    'malayalam' : ['VishnuPJ/MalayaLLM_7B_Instruct_v0.2', 'sarvamai/sarvam-1']
     # add languages as needed
 }
 PROMPT_TEMPLATES = {
@@ -50,6 +51,10 @@ PROMPT_TEMPLATES = {
         'prefix': "\"{title}\" शीर्षक वाले लेख में {last},{first} {aux} द्वारा, ",
         'abstract': "यहाँ एक संक्षिप्त विवरण है, जहाँ आप संदर्भ के रूप में उपयोग कर सकते हैं: {abstract}"
     },
+    'malayalam': {
+        'prefix' : "{last},{first} {aux} എഴുതിയ \"{title}\" എന്ന ലേഖനത്തിൽ." ,
+        'abstract': "നിങ്ങളുടെ റഫറൻസിനായി ലേഖന സംഗ്രഹത്തിന്റെ തുടക്കം ഇതാ.: {abstract} "
+    }
     # add languages as needed
 }
 
@@ -102,6 +107,15 @@ n_calls = len(records) * 2 * len(CONFIGS) * len(MODELS[YOUR_LANG])
 for model_name in MODELS[YOUR_LANG]:
     model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True).to(device)
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    chatml = (
+    "{% if not add_generation_prompt is defined %}"
+    "{% set add_generation_prompt = false %}{% endif %}"
+    "{% for message in messages %}"
+    "{{'<|im_start|>' + message['role'] + '\\n' + message['content'] + '<|im_end|>' + '\\n'}}"
+    "{% endfor %}"
+    "{% if add_generation_prompt %}{{ '<|im_start|>assistant\\n' }}{% endif %}"
+   )
+    tokenizer.chat_template = chatml
     terminators = [
         tokenizer.eos_token_id,
         tokenizer.convert_tokens_to_ids("<|eot_id|>"),
