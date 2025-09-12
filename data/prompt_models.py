@@ -68,7 +68,6 @@ PROMPT_TEMPLATES = {
     # add languages as needed
 }
 
-
 CONFIGS = [
     ('k50_p0.90_t0.1', dict(top_k=50, top_p=0.90, temperature=0.1)),
     ('k50_p0.95_t0.2', dict(top_k=50, top_p=0.95, temperature=0.2)),
@@ -106,10 +105,9 @@ def build_prompt(row, lang='english', with_abstract=False):
 
     if with_abstract:
         if not (row.abstract is None):
-            prompt += " " + template['abstract'].format(abstract=row.abstract)[:250]
+            prompt += " " + template['abstract'].format(abstract=row.abstract)[:500]
 
     return prompt
-
 
 logging.set_verbosity_warning()
 records = pd.read_json(Q_FILE, lines=True)
@@ -118,19 +116,16 @@ n_calls = len(records) * 2 * len(CONFIGS) * len(MODELS[YOUR_LANG])
 for model_name in MODELS[YOUR_LANG]:
     model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True).to(device)
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    chatml = (
-    "{% if not add_generation_prompt is defined %}"
-    "{% set add_generation_prompt = false %}{% endif %}"
-    "{% for message in messages %}"
-    "{{'<|im_start|>' + message['role'] + '\\n' + message['content'] + '<|im_end|>' + '\\n'}}"
-    "{% endfor %}"
-    "{% if add_generation_prompt %}{{ '<|im_start|>assistant\\n' }}{% endif %}"
-   )
-    tokenizer.chat_template = chatml
+
+    # to avoid chat_template issues
+    if tokenizer.chat_template is None:
+        tokenizer.chat_template = "{% for message in messages %}{% if message['role'] == 'user' %}{{ 'USER: ' + message['content'] + ' '}}{% elif message['role'] == 'assistant' %}{{ 'ASSISTANT: ' + message['content'] + ' '}}{% endif %}{% endfor %}"
+
     terminators = [
         tokenizer.eos_token_id,
         tokenizer.convert_tokens_to_ids("<|eot_id|>"),
-    ]
+        ]
+    terminators = [token_id for token_id in terminators if token_id is not None]  # for qwen issue
     for (config_label, config_dict), w_abstract in product(CONFIGS, [False, True]):
         print(f'Prompting: model={model_name}, config={config_label}, prompw_w_abstract={w_abstract}')
         new_records = []

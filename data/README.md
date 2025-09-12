@@ -29,9 +29,15 @@ You are the expert of the language you are in charge of.
     - If the models you use do NOT follow the template: `message = [{"role": "user", "content": prompt}]`, modify the script accordingly.
     - The script will produce outputs using several sampling configurations, and store them in `./<your_language>/generated_answers.jsonl`
 
-3. We will annotate all the 12xnum_questions (12 comes from 2 models, 2 prompts, 3 sampling configurations) outputs with two binary annotations, using the script <PLACEHOLDER>. For each output, the script will show you the prompt, the response text, and will open the article in your brpwser. Use thet to answer the two questions: 
+3. We will annotate all the 12xnum_questions (12 comes from 2 models, 2 prompts, 3 sampling configurations) outputs with two binary annotations, using the script `annotate_fluency_hallucs.py`. For each output, the script will show you the prompt, the response text, and will open the article in your browser. Use that to answer the two questions: 
     - are the outputs fluent / understandable? (code-switching is okay, as long as it's between <your_language> and English) 
     - does the output contain a hallucination?
 
-4. The scripts produce a file containing the finalized datasets, language experts double check the quality
+4. The scripts produce a file containing the finalized datasets, language experts double check the quality.
+
+5. The script `prepare_for_release.py` prepares the annotation files to be released by updating the index format (e.g. `en-valid-0`), keeping only annotated answers (no null values), preparing separate files for `data` and `label`s, and double-checking that both files have the same index list. It is run as follows:
+
+```
+python prepare_for_release.py --language <your_language> --split <train/valid/test/train2>
+```
 
