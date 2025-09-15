@@ -117,11 +117,3 @@ if __name__ == '__main__':
     args = parse_options()
     main(args)
 
-
-new_annots = 0
-for i in random_ids:
-    if check_condition(finaldb, i):
-        userans = ('y', 'y')
-        finaldb.loc[i, 'has_fluency_mistakes'] = user2ans[userans[0]]
-        finaldb.loc[i, 'has_factual_mistakes'] = user2ans[userans[1]]
-        new_annots += 1
