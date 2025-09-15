@@ -33,7 +33,8 @@ MODELS = {
     'italian': ["google/gemma-2-9b-it", "meta-llama/Meta-Llama-3.1-8B-Instruct", "sapienzanlp/modello-italia-9b"],
     'english': ["lmsys/vicuna-7b-v1.5", "meta-llama/Meta-Llama-3-8B-Instruct"],
     'bengali': ["BanglaLLM/BanglaLLama-3-8b-bangla-alpaca-orca-instruct-v0.0.1", "BanglaLLM/Bangla-s1k-qwen-2.5-3B-Instruct"], 
-    'malayalam' : ['VishnuPJ/MalayaLLM_7B_Instruct_v0.2', 'sarvamai/sarvam-1']
+    'malayalam' : ['VishnuPJ/MalayaLLM_7B_Instruct_v0.2', 'sarvamai/sarvam-1'],
+    'telugu':['Telugu-LLM-Labs/Indic-gemma-7b-finetuned-sft-Navarasa-2.0','meta-llama/Llama-3.1-8B-Instruct'],
     # add languages as needed
 }
 PROMPT_TEMPLATES = {
