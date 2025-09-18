@@ -33,7 +33,8 @@ MODELS = {
     'italian': ["google/gemma-2-9b-it", "meta-llama/Meta-Llama-3.1-8B-Instruct", "sapienzanlp/modello-italia-9b"],
     'english': ["lmsys/vicuna-7b-v1.5", "meta-llama/Meta-Llama-3-8B-Instruct"],
     'bengali': ["BanglaLLM/BanglaLLama-3-8b-bangla-alpaca-orca-instruct-v0.0.1", "BanglaLLM/Bangla-s1k-qwen-2.5-3B-Instruct"], 
-    'malayalam' : ['VishnuPJ/MalayaLLM_7B_Instruct_v0.2', 'sarvamai/sarvam-1']
+    'malayalam' : ['VishnuPJ/MalayaLLM_7B_Instruct_v0.2', 'sarvamai/sarvam-1'],
+    'gujarati': ['GenVRadmin/AryaBhatta-GemmaUltra-Merged', 'GenVRadmin/AryaBhatta-GemmaGenZ-Vikas-Merged']
     # add languages as needed
 }
 PROMPT_TEMPLATES = {
@@ -65,6 +66,10 @@ PROMPT_TEMPLATES = {
         'prefix' : "{last},{first} {aux} എഴുതിയ \"{title}\" എന്ന ലേഖനത്തിൽ." ,
         'abstract': "നിങ്ങളുടെ റഫറൻസിനായി ലേഖന സംഗ്രഹത്തിന്റെ തുടക്കം ഇതാ.: {abstract} "
     },
+    'gujarati': {
+        'prefix': "{last},{first} {aux} દ્વારા \"{title}\" શીર્ષકવાળા લેખમાં, ",
+        'abstract': "અહીં લેખના સારાંશનો એક ભાગ છે, જે તમે સંદર્ભ તરીકે ઉપયોગ કરી શકો છો: {abstract}"
+    }
     # add languages as needed
 }
 
@@ -114,7 +119,7 @@ records = pd.read_json(Q_FILE, lines=True)
 i = 0
 n_calls = len(records) * 2 * len(CONFIGS) * len(MODELS[YOUR_LANG])
 for model_name in MODELS[YOUR_LANG]:
-    model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True).to(device)
+    model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True,  device_map='auto')
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
 
     # to avoid chat_template issues
@@ -139,19 +144,21 @@ for model_name in MODELS[YOUR_LANG]:
                 add_generation_prompt=True,
                 return_tensors="pt"
             ).to(model.device)
-            attention_mask = torch.ones_like(inputs)  # vector of ones because bsz =1
-            outputs = model.generate(
-                inputs,
-                max_new_tokens=512,
-                attention_mask=attention_mask,  # transformers complains if this not here
-                num_return_sequences=1,
-                eos_token_id=terminators,
-                pad_token_id=tokenizer.eos_token_id,
-                return_dict_in_generate=True,
-                output_logits=True,
-                do_sample=True,
-                **config_dict
-            )
+            attention_mask = torch.ones_like(inputs).to(model.device) # vector of ones because bsz =1
+
+            with torch.no_grad():
+                outputs = model.generate(
+                    inputs,
+                    max_new_tokens=512,
+                    attention_mask=attention_mask, # transformers complains if this not here
+                    num_return_sequences=1,
+                    eos_token_id=terminators,
+                    pad_token_id=tokenizer.eos_token_id,
+                    return_dict_in_generate=True,
+                    output_logits=True,
+                    do_sample=True,
+                    **config_dict
+                )
 
             response = outputs.sequences[0][inputs.shape[-1]:]
             response_text = tokenizer.decode(response, skip_special_tokens=True)
@@ -171,6 +178,10 @@ for model_name in MODELS[YOUR_LANG]:
             with open(OUT_FILE, 'a', encoding='utf-8') as file:
                 json.dump(row, file, ensure_ascii=False)
                 file.write('\n')
+
+            # Free memory after each prompt
+            # del inputs, attention_mask, outputs, response, response_text, response_token_ids, response_tokens, response_logits
+            # torch.cuda.empty_cache()
 
             i += 1
             print(f'prompts done: {i}/{n_calls}')
