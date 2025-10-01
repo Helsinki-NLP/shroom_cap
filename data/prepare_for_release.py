@@ -7,7 +7,11 @@ LANG_MAP = {
     "english": "en",
     "italian": "it",
     "hindi": "hi",
-    "french": "fr"
+    "french": "fr",
+    "telugu": "te",
+    "bengali": "bn",
+    "gujarati": "gu",
+    "malayalam": "ml"
 }
 
 def normalize_label(value, line_num, field_name):
@@ -17,7 +21,7 @@ def normalize_label(value, line_num, field_name):
     if value not in ["y", "n", "m"]:
         raise ValueError(f"Line {line_num}: Invalid label '{value}' in field '{field_name}'. Only 'y', 'n', 'm' are allowed.")
     return "y" if value == "m" else value
-    
+
 def main():
     parser = argparse.ArgumentParser(description="Prepares data for release by fixing indices, cleaning annotated files and splitting data/labels.")
     parser.add_argument("--language", required=True, help="Language name (e.g., 'spanish').")
@@ -40,7 +44,7 @@ def main():
     if not os.path.exists(input_file):
         print(f"Error: input file {input_file} not found.")
         return
-        
+
     indices_data = []
     indices_label = []
 
@@ -61,6 +65,8 @@ def main():
             # --- Step 1: Fix index format ---
             if split == 'valid':
                 split = 'val'
+            elif split == 'test':
+                split = 'tst'
             expected_prefix = f"{lang}-{split}-"
             if not str(data.get("index", "")).startswith(expected_prefix):
                 data["index"] = f"{expected_prefix}{data['index']}"
@@ -77,7 +83,7 @@ def main():
             elif fluency is None or factual is None:
                 print(f"Warning: line {line_num} has only one null field.")
                 continue
-                
+
             # --- Step 3: Validate and normalize labels ---
             fluency_norm = normalize_label(fluency, line_num, "has_fluency_mistakes")
             factual_norm = normalize_label(factual, line_num, "has_factual_mistakes")
@@ -103,7 +109,7 @@ def main():
     print(f"Cleaned data written to {cleaned_file}")
     print(f"Data-only file written to {data_file}")
     print(f"Label-only file written to {label_file}")
-    
+
     # --- Step 5: Sanity check ---
     if indices_data != indices_label:
         raise ValueError("Undex lists of data.jsonl and label.jsonl do not match!")
