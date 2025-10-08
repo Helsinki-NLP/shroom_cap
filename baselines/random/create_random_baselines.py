@@ -7,7 +7,7 @@ import time
 def create_random_baseline(input_path, output_path, seed=None):
     """
     Create a random baseline .jsonl file from an existing dataset.
-    
+
     Args:
         input_path (str): Path to the input .jsonl file
         output_path (str): Path to the output .jsonl file with random predictions
@@ -41,7 +41,7 @@ def main():
     parser.add_argument("--output", help="Path to save random baseline JSONL file")
     parser.add_argument("--seed", type=int, default=None,
                         help="Random seed for reproducibility (default: auto)")
-    
+
     args = parser.parse_args()
     create_random_baseline(args.input, args.output, args.seed)
 
