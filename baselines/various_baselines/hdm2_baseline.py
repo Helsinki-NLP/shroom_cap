@@ -5,9 +5,9 @@ from transformers import AutoTokenizer, pipeline
 from sklearn.metrics import precision_recall_fscore_support, accuracy_score
 from hdm2 import HallucinationDetectionModel
 import contextlib
-import io
+import io, gc
 # ---------------- Load dataset ----------------
-data = pd.read_pickle("multilingual_data_with_labels.pkl")
+data = pd.read_pickle("multilingual_test_data_with_labels.pkl")
 print("Columns:", data.columns)
 # Expecting columns: ["question", "pdf_text", "output_text", "language", "label"]
 
@@ -48,21 +48,36 @@ def run_inference(df, detector, batch_size=8, threshold=0.5):
             batch = prompts[i:i+batch_size]
 
             for context_text, response_text in batch:
-                # Use your HDM2 detector
-                with contextlib.redirect_stdout(io.StringIO()):
-                    results = detector.apply(
-                        "You are an AIMon Bot. Help me classify hallucinations.",
-                        context_text,
-                        response_text
-                    )
+                # Skip if response or context is empty
+                if not response_text.strip() or not context_text.strip():
+                    chunk_scores.append(0.0)
+                    continue
 
-                # Adjust this depending on HDM2 output structure
-                chunk_score = results.get("adjusted_hallucination_severity", 0.0)
-                chunk_scores.append(chunk_score)
+                try:
+                    with contextlib.redirect_stdout(io.StringIO()):
+                        results = detector.apply(
+                            "You are an AIMon Bot. Help me classify hallucinations.",
+                            context_text,
+                            response_text
+                        )
 
-                torch.cuda.empty_cache()
-                del results, context_text, response_text
-        
+                    chunk_score = results.get("adjusted_hallucination_severity", 0.0)
+
+                except ValueError as e:
+                    # Handle tokenizer issue where second sequence is missing
+                    if "1 is not in list" in str(e):
+                        print(f"Skipped problematic example (empty or malformed input).")
+                        chunk_score = 0.0
+                    else:
+                        raise e
+
+            chunk_scores.append(chunk_score)
+
+            del results
+            torch.cuda.empty_cache()
+            gc.collect()
+                
+            del batch
 
         # Take max score across chunks as row-level hallucination score
         row_score = max(chunk_scores) if chunk_scores else 0.0
@@ -73,7 +88,7 @@ def run_inference(df, detector, batch_size=8, threshold=0.5):
     df["hallucinated"] = hallucination_labels
     return df
 
-# Assume `data` is your dataframe
+
 results = run_inference(data, hdm_model, batch_size=2, threshold=0.5)
 
 # Save results
