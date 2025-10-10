@@ -1,0 +1,31 @@
+Title,Question,Answer Reference
+Aya Model: An Instruction Finetuned Open-Access Multilingual Language Model,What is the quote said by Ludwig Wittgenstein that is mentioned in the beginning of the Introduction section?,Section 1
+MultiPICo: Multilingual Perspectivist Irony Corpus,Is MultiPICo a monolingual or a multilingual dataset?,Section Abstract
+AppWorld: A Controllable World of Apps and People for Benchmarking Interactive Coding Agents,What is the full form of the metric TGC?,Section 3.2
+MMToM-QA: Multimodal Theory of Mind Question Answering,MMToM-QA Benchmark consists of how many videos of a person?,Section 3.1
+MAP’s not dead yet: Uncovering true language model modes by conditioning away degeneracy,What is the name of the search method mentioned for attacking the bad mode problem?,Section 2.3
+NounAtlas: Filling the Gap in Nominal Semantic Role Labeling,What is the name of the inventory of predicates for nominal Semantic Role Labeling (SRL)?,Section 1
+The Earth is Flat because...: Investigating LLMs’ Belief towards Misinformation via Persuasive Conversation,Name the 3 QA datasets from which 1500 questions were curated in total?,Section 2.1
+Let’s Go Real Talk: Spoken Dialogue Model for Face-to-Face Conversation,MultiDialog consists of how many hours of audio data?,Section Abstract
+Having Beer after Prayer? Measuring Cultural Bias in Large Language Models,What is the full form of the new benchmark constructed CAMEL?,Section 1
+Word Embeddings Are Steers for Language Models,What is one limitation of LM-Steer?,Section Limitations
+Estimating the Level of Dialectness Predicts Inter-annotator Agreement in Multi-dialect Arabic Datasets,Higher ALDi scores correlate with higher annotator agreement: Right or wrong?,Section 1
+Greed is All You Need: An Evaluation of Tokenizer Inference Methods,The Rényi efficiency is measured using the tokenization-scorer package6 with which value of α?,Section 4
+Getting Serious about Humor: Crafting Humor Datasets with Unfunny Large Language Models,Name the other model which is fine-tuned with ROBERTA for humor classification.,Section 3.1.1
+Unifying Cross-Lingual Semantic Role Labeling with Heterogeneous Linguistic Resources,Name the 6 languages of the CoNLL-2009 benchmark.,Section 4.2
+Preregistering NLP research,Although preregistration is offered as a solution what are the 3 limitations that still remain?,Section 7
+It’s Not Just Size That Matters: Small Language Models Are Also Few-Shot Learners,What is an important limitation of pattern-exploiting training (PET)?,Section 3.1
+How many data points is a prompt worth?,How long did it take to run an experiment on a single Nvidia V100?,Section 8
+Learning How to Ask: Querying LMs with Mixtures of Soft Prompts,Give the full form of the OMCS dataset.,Section 4.4
+COVID-19 Literature Knowledge Graph Construction and Drug Repurposing Report Generation,"How many Diseases, Chemicals and Genes does the Knowledge Graph (KG) includes?",Section 4.2
+Query2Prod2Vec: Grounded Word Embeddings for eCommerce,Which  four constraints are identified for effective word embeddings in eCommerce?,Section 2
+Monotonicity Marking from Universal Dependency Trees,What is ccg2mono?,Section 1
+Is that really a question? Going beyond factoid questions in NLP,2000 questions are sampled from 2006 till which year?,Section 3.1
+"Builder, we have done it: Evaluating & Extending Dialogue-AMR NLU Pipeline for Two Collaborative Domains",Situated Corpus of Understanding Transactions (SCOUT) is comprised of how many hours of dialogues from the robot navigation domain?,Section 2.2
+Discriminative Training and Maximum Entropy Models for Statistical Machine Translation,What are alignment templates?,Section 2
+Bleu: a Method for Automatic Evaluation of Machine Translation,Monolingual group of human judges consisted of how many native speakers of English?,Section 4
+Generation that Exploits Corpus-Based Statistical Knowledge,What are the relational keywords that apply at the instance level?,Section 6
+All That’s ‘Human’ Is Not Gold: Evaluating Human Evaluation of Generated Text,What is a 4-point scale by which the 5 text passages were rated?,Section 2.1
+Scientific Credibility of Machine Translation Research: A Meta-Evaluation of 769 Papers,What are the four main pitfalls identified in our meta-evaluation of machine translation (MT)?,Section 3
+Neural Machine Translation with Monolingual Translation Memory,What are three settings  mentioned in the Experiments sections?,Section 4
+Intrinsic Dimensionality Explains the Effectiveness of Language Model Fine-Tuning,How many parameters are enough to represent the problem of tuning a RoBERTa model to within 90% of the performance of the full model?,Section 1
