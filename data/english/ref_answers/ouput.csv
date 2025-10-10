@@ -1,0 +1,27 @@
+Title,Question,Answer Reference
+Extrinsic Evaluation of Machine Translation Metrics,What do the authors use extractive QA for in their methodology?,Section 3.2.2
+COKE: A Cognitive Knowledge Graph for Machine Theory of Mind,What are the two steps that the authors used for the data collection process?,Section 2.3
+G-DIG: Towards Gradient-based DIverse and hiGh-quality Instruction Data Selection for Machine Translation,How do the authors make the high-quality data selection that they claim to do? How do they use k-means for it?,"Section 3.1, 3.2"
+"Climbing towards NLU: On Meaning, Form, and Understanding in the Age of Data","What do the authors mean when they say that ""a system trained only on form has a priori no way to learn meaning?",Section 10
+A Balanced Data Approach for Evaluating Cross-Lingual Transfer: Mapping the Linguistic Blood Bank,"What are the ""blood"" and ""Blood bank"" metaphors that the authors make?",Section 1
+disco: a toolkit for Distributional Control of Generative Models,What do the authors do to limit hallucinations?,Section 4
+Mind Your Outliers! Investigating the Negative Impact of Outliers on Active Learning for Visual Question Answering,What is the taxonomy of outliers that the authors use?,Section ?
+Video-aided Unsupervised Grammar Induction,Why do the authors focus on videos instead of images?,Section Abstract
+Glot500: Scaling Multilingual Corpora and Language Models to 500 Languages,What are their main contributions?,Section 1
+Do You Know That Florence Is Packed with Visitors? Evaluating State-of-the-art Models of Speaker Commitment,Why are the models not able to generalize beyond sentences with negation?,Section 6
+Hidden Biases in Unreliable News Detection Datasets,which baseline models are considered by the authors?,Section 4.1
+Neural Machine Translation Methods for Translating Text to Sign Language Glosses,which are the metrics used to compare the effects of each component?,Section 3.5
+Deciphering Oracle Bone Language with Diffusion Models,is the proposed OBSD method generalizable to other languages?,Section 4.5
+"Same Task, More Tokens: the Impact of Input Length on the Reasoning Performance of Large Language Models",do all types of padding have the same effect?,Section 4
+A Maximum Entropy Approach to Natural Language Processing,what was the language pair used for the experimentation?,Section 5
+Centering: A Framework for Modeling the Local Coherence of Discourse,what is a centers of an utterance?,Section 3
+Word Representations: A Simple and General Method for Semi-Supervised Learning,what is the complexity of brown algorithm based class-based bigram language model?,Section 3.1
+Distributional Memory: A General Framework for Corpus-Based Semantics,give the formula of percentage purity used in the paper!,Section 6.1.3
+SemEval-2020 Task 11: Detection of Propaganda Techniques in News Articles,How many propagandas were used in the dataset introduced in the shared task?,Section 2
+UnNatural Language Inference,"what does Manning encourages to NLP community to do, as mentioned in the conclusion?",Section 9
+Applying the Transformer to Character-level Transduction,what is the effective batch size necessary for the Transformer to outperform recurrent architectures?,Section 3.1
+Generalizing Backpropagation for Gradient-Based Interpretability,was the methodology only tested on an agreement task?,Section Abstract
+Bridging the Gap between Training and Inference for Neural Machine Translation,on which datasets has the method been tested?,Section 5.1
+Which questions should I answer? Salience Prediction of Inquisitive Questions,where were the contexts originally taken from?,Section 4.1
+Fantastically Ordered Prompts and Where to Find Them: Overcoming Few-Shot Prompt Order Sensitivity,was the method tested beyond the GPT series?,Section 4
+ParaAMR: A Large-Scale Syntactically Diverse Paraphrase Dataset by AMR Back-Translation,do the authors report inter-annotator agreement scores?,Section 4.4
