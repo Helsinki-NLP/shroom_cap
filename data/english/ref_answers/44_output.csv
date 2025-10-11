@@ -1,0 +1,45 @@
+Title,Question,Answer Reference
+Pretraining Data Detection for Large Language Models: A Divergence-based Calibration Method,What is the name of the Chinese-language benchmark that is constructed based on Google-Patents?,Section Abstract
+Formality is Favored: Unraveling the Learning Preferences of Large Language Models on Data with Conflicting Knowledge,What five characteristics are associated as information with each name of the dataset?,Section 2.2
+Words Worth a Thousand Pictures: Measuring and Understanding Perceptual Variability in Text-to-Image Generation,Which three state-of-the-art models are targeted by the analyses?,Section 2.1
+Learning to Retrieve Iteratively for In-Context Learning,What is the full form of MDP?,Section 1
+Towards Robust Speech Representation Learning for Thousands of Languages,The final pre-training dataset spans how many language families?,Section 3.5
+"An image speaks a thousand words, but can everyone listen? On image transcreation for cultural relevance",Name the three pipelines for image transcreation.,"Section 1, 2"
+Fishing for Magikarp: Automatically Detecting Under-trained Tokens in Large Language Models,What are UNREACHABLE TOKENS?,Section 2.1
+SUPER: Evaluating Agents on Setting Up and Executing Tasks from Research Repositories,What is the full form of SUPER benchmark?,Section 1
+CoGen: Learning from Feedback with Coupled Comprehension and Generation,"As a limitation, the work does not touch on an important factor in deployed systems. What is it?",Section Limitations
+OATH-Frames: Characterizing Online Attitudes Towards Homelessness with LLM Assistants,What are the three components of the novel framework?,Section 1
+Finding Blind Spots in Evaluator LLMs with Interpretable Checklists,Name the six selectd test sets containing prompts in English.,Section 3.1
+Towards Cross-Cultural Machine Translation with Retrieval-Augmented Generation from Multilingual Knowledge Graphs,"XC-Translate, the manually-created benchmark for crosscultural translation covers how many languages?",Section 1
+Measuring Psychological Depth in Language Models,How many peer-reviewed articles and books were surveyed in the final review?,Section 2
+Are Large Language Models Capable of Generating Human-Level Narratives?,Name the three Aspects of Story-Telling.,Section 2.1
+The Zeno’s Paradox of ‘Low-Resource’ Languages,How many unique papers did the final corpus include?,Section 2
+What the Harm? Quantifying the Tangible Impact of Gender Bias in Machine Translation with a Human-centered Study,Which three language pairs does the work include?,Section 3.1
+Fool Me Once? Contrasting Textual and Visual Explanations in a Clinical Decision-Support Setting,How many cases were selected from the annotated 160 cases?,Section 3.4
+DEM: Distribution Edited Model for Training with Mixed Data Distributions,How many distinct task types does the Super Natural Instructions (SNI) dataset cover?,Section 5.1
+Threshold-driven Pruning with Segmented Maximum Term Weights for Approximate Cluster-based Sparse Retrieval,How many English passages does the MS MARCO Passage ranking dataset contain?,Section 4
+"Twists, Humps, and Pebbles: Multilingual Speech Recognition Models Exhibit Gender Performance Gaps",Which two metrics are used to evaluate transcription quality?,Section 3.1
+Do LLMs Plan Like Human Writers? Comparing Journalist Coverage of Press Releases with LLMs,How many  pairs of articles and press releases were annotated to train a model to detect when a news article contrastively summarizes a press release?,Section 3.1
+OpenOmni: A Collaborative Open Source Tool for Building Future-Ready Multimodal Conversational Agents,Name the GPU on which the Agent modules were run.,Section 4.2
+sign.mt: Real-Time Multilingual Sign Language Translation Application,Name the license under which the code for sign.mt is openly accessible and available.,Section 4
+Midge: Generating Image Descriptions From Computer Vision Detections,How many PASCAL images does the evaluation image set contain?,Section 3
+Automatic Word Sense Discrimination,On how many natural ambiguous words and on how many artificial ambiguous words was context-group discrimination tested?,Section 3
+Finding Predominant Word Senses in Untagged Text,How many documents does the SPORTS corpus consist of?,Section 5.1
+Unsupervised Word Sense Disambiguation Rivaling Supervised Methods,On a set of how many examples was the one-sense-per-discourse hypothesis tested?,Section 2
+Discriminative Training Methods for Hidden Markov Models: Theory and Experiments with Perceptron Algorithms,What F-measure does the perceptron algorithm achieve in NP chunking?,Section 4.3
+Thumbs up? Sentiment Classification using Machine Learning Techniques,Name the three machine learning methods employed for the work?,Section Abstract
+Using the Web to Overcome Data Sparseness,Which type of correlation coefficient is being reported in this paper?,Section 3.1
+World-to-Words: Grounded Open Vocabulary Acquisition through Fast Mapping in Vision-Language Models,Name the two new metrics which were designed to combine language and vision performance.,Section 2.2
+"When Does Translation Require Context? A Data-driven, Multilingual Exploration",What is the full form of the MUDA benchmark?,Section Abstract
+LexSym: Compositionality as Lexical Symmetry,Name the  three diverse classes of language understanding problems on which the evaluation focuses.,Section 5
+Do Androids Laugh at Electric Sheep? Humor “Understanding” Benchmarks from The New Yorker Caption Contest,What are the three tasks that were built to test how well AI models “understand” humor across vision and language ?,Section 1
+Improving Pretraining Techniques for Code-Switched NLP,Name the benchmark that was used to evaluate models for Sentiment Analysis (SA) and Question Answering (QA).,Section 3.2
+Marked Personas: Using Natural Language Prompts to Measure Stereotypes in Language Models,Name the 5 races/ethnicities on which the work focus.,Section 4
+"Small Data, Big Impact: Leveraging Minimal Data for Effective Machine Translation",How many low-resource languages does the dataset that was created cover?,Section 1
+Faithful Low-Resource Data-to-Text Generation through Cycle Training,Which five automatic metrics were used?,Section 5.1
+Do PLMs Know and Understand Ontological Knowledge?,How many subtasks does the memorizing task consist of?,Section 2.2
+Exploring How Generative Adversarial Networks Learn Phonological Representations,How many sentences are there in the TIMIT corpus?,Section 4
+Entity Tracking in Language Models,Name the three models which were used for the work.,Section 4.1
+Distilling Script Knowledge from Large Language Models for Constrained Language Planning,How many abstract goals are randomly collected from WikiHow?,Section 4.4
+CAME: Confidence-guided Adaptive Memory Efficient Optimization,Name the three trending large language models on which the efficiency of the proposed CAME was evaluated.,Section 4.1
+"Don’t Generate, Discriminate: A Proposal for Grounding Language Models to Real-World Environments",What is the full form of KBQA?,Section Abstract
