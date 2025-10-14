@@ -27,7 +27,7 @@ gen_model = AutoModelForCausalLM.from_pretrained(
     gen_model_name, 
     device_map="auto", 
     torch_dtype=torch.float16,
-    use_auth_token="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",
+    use_auth_token=<insert token here>,
     cache_dir="/ssd_scratch/patanjali.b/models",
 )
 
