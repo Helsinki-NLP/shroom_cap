@@ -34,7 +34,9 @@ MODELS = {
     'english': ["lmsys/vicuna-7b-v1.5", "meta-llama/Meta-Llama-3-8B-Instruct"],
     'bengali': ["BanglaLLM/BanglaLLama-3-8b-bangla-alpaca-orca-instruct-v0.0.1", "BanglaLLM/Bangla-s1k-qwen-2.5-3B-Instruct"], 
     'malayalam' : ['VishnuPJ/MalayaLLM_7B_Instruct_v0.2', 'sarvamai/sarvam-1'],
-    'gujarati': ['GenVRadmin/AryaBhatta-GemmaUltra-Merged', 'GenVRadmin/AryaBhatta-GemmaGenZ-Vikas-Merged']
+    'gujarati': ['GenVRadmin/AryaBhatta-GemmaUltra-Merged', 'GenVRadmin/AryaBhatta-GemmaGenZ-Vikas-Merged'],
+    'telugu':['meta-llama/Llama-3.1-8B-Instruct',], 
+    # 'Telugu-LLM-Labs/Indic-gemma-7b-finetuned-sft-Navarasa-2.0' requires a different prompt, given by `prompt_models_telugu_nvrs.py` 
     # add languages as needed
 }
 PROMPT_TEMPLATES = {
@@ -69,7 +71,11 @@ PROMPT_TEMPLATES = {
     'gujarati': {
         'prefix': "{last},{first} {aux} દ્વારા \"{title}\" શીર્ષકવાળા લેખમાં, ",
         'abstract': "અહીં લેખના સારાંશનો એક ભાગ છે, જે તમે સંદર્ભ તરીકે ઉપયોગ કરી શકો છો: {abstract}"
-    }
+    },
+    'telugu':{
+        'prefix': "\"{title}\" అనే శీర్షికతో {last},{first} {aux} రాసిన రచనలో, ",
+        'abstract': "మీ సూచన కోసం ప్రబంధ సారాంశం ఇక్కడ ఇవ్వబడింది: {abstract}"
+    },
     # add languages as needed
 }
 
