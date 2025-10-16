@@ -10,6 +10,9 @@ from . import scorer
 
 def can_submit():
     return datetime.datetime.now() < settings.TEST_PHASE_END_DATE
+    
+def can_display():
+    return datetime.datetime.now() < settings.LEADERBOARD_DISPLAY_DATE
 
 def get_profile(user):
     profile = (
@@ -21,7 +24,7 @@ def get_profile(user):
     return profile
 
 def get_rankings(_force_val=False):
-    if can_submit():
+    if can_display():
         return None
         
     split = 'VAL' if _force_val else 'TST'

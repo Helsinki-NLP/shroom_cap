@@ -135,4 +135,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ### PROJECT SPECIFIC
 from datetime import datetime
 TEST_PHASE_START_DATE = datetime(year=2025, month=10, day=5)
-TEST_PHASE_END_DATE = datetime(year=2025, month=10, day=15)
+TEST_PHASE_END_DATE = datetime(year=2025, month=10, day=30)
+LEADERBOARD_DISPLAY_DATE = datetime(year=2025, month=10, day=16)
