@@ -1,102 +1,148 @@
 import torch
 import pandas as pd
 from tqdm import tqdm
-from transformers import AutoTokenizer, pipeline
+from transformers import AutoModelForSequenceClassification
+import pandas as pd
+from transformers import AutoTokenizer
 from sklearn.metrics import precision_recall_fscore_support, accuracy_score
 
-# ---------------- Load dataset ----------------
-data = pd.read_pickle("multilingual_data_with_labels.pkl")
-print("Columns:", data.columns)
-# Expecting columns: ["question", "pdf_text", "output_text", "language", "label"]
 
-# ---------------- Tokenizer ----------------
-model_name = "bond005/xlm-roberta-xl-hallucination-detector"
-tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+data = pd.read_pickle("multilingual_test_data_with_labels.pkl")
+data.head()
 
-def chunk_text(text, tokenizer, chunk_size=400, overlap=50):
-    """
-    Tokenizer-based chunking to respect model's max_length (514).
-    """
-    tokens = tokenizer.tokenize(text)
-    for i in range(0, len(tokens), chunk_size - overlap):
-        chunk = tokens[i:i+chunk_size]
-        yield tokenizer.convert_tokens_to_string(chunk)
+print(data.columns)
 
-# ---------------- Pipeline ----------------
+import torch
+from transformers import pipeline
+
 hallucination_detector = pipeline(
-    task="text-classification",
-    model=model_name,
-    tokenizer=tokenizer,
-    device_map=0,  # Use all available GPUs
-    torch_dtype=torch.float16,
-    trust_remote_code=True,
-    truncation=True,
-    max_length=512
+    task='text-classification',
+    model='bond005/xlm-roberta-xl-hallucination-detector',
+    framework='pt', trust_remote_code=True, device='cuda', torch_dtype=torch.float16
 )
 
-# ---------------- Inference ----------------
-def run_inference(df, detector, tokenizer, batch_size=8, threshold=0.5):
+def chunk_text(text, chunk_size=350, overlap=20):
+    """
+    Split text into overlapping chunks of tokens (split by whitespace).
+    """
+    tokens = text.split()
+    for i in range(0, len(tokens), chunk_size - overlap):
+        yield " ".join(tokens[i:i+chunk_size])
+
+# --- Inference ---
+def run_inference(df, detector, batch_size=8, threshold=0.5):
+    """
+    Run hallucination detection row by row with chunking + batching.
+
+    Args:
+        df: DataFrame with ['question', 'pdf_text', 'output_text']
+        detector: HuggingFace pipeline (hallucination detector)
+        batch_size: number of pairs per forward pass
+        threshold: classification threshold (default 0.5)
+
+    Returns:
+        DataFrame with new columns ['hallucination_score', 'hallucinated']
+    """
     all_scores, hallucination_labels = [], []
 
     for _, row in tqdm(df.iterrows(), total=len(df)):
-        question, pdf_text, hypothesis = row["question"], row["pdf_text"], row["output_text"]
+        question = row["question"]
+        pdf_text = row["pdf_text"]
+        hypothesis = row["output_text"]
 
-        # Premise-hypothesis pairs (tokenizer-safe chunking)
+        # Build premise-hypothesis pairs
         pairs = []
-        for chunk in chunk_text(pdf_text, tokenizer, chunk_size=200):
+        for chunk in chunk_text(pdf_text, chunk_size=150):
             premise = question + " " + chunk
             pairs.append(f"Premise: {premise}\nHypothesis: {hypothesis}")
 
+        # Batched predictions
         chunk_scores = []
         for i in range(0, len(pairs), batch_size):
             batch = pairs[i:i+batch_size]
-            predictions = detector(batch)
+            predictions = detector(batch, truncation=True, max_length=514)
 
             for pred in predictions:
-                score = pred["score"] if pred["label"] == "Hallucination" else (1.0 - pred["score"])
+                if pred["label"] == "Hallucination":
+                    score = pred["score"]
+                else:
+                    score = 1.0 - pred["score"]
                 chunk_scores.append(score)
 
             torch.cuda.empty_cache()
 
+        # Aggregate: take maximum across chunks
         row_score = max(chunk_scores) if chunk_scores else 0.0
         all_scores.append(row_score)
+
+        # Apply threshold
         hallucination_labels.append("y" if row_score >= threshold else "n")
 
     df["hallucination_score"] = all_scores
     df["hallucinated"] = hallucination_labels
     return df
 
-# ---------------- Metrics ----------------
+from sklearn.metrics import precision_recall_fscore_support, accuracy_score
+import pandas as pd
+
 def compute_metrics(df, label_col="label", pred_col="hallucinated"):
     """
-    Compute precision, recall, f1, accuracy overall + per language
+    Compute precision, recall, f1, accuracy overall + per language.
+    
+    CRITICAL FILTER APPLIED: Only computes metrics where:
+    1. df['fluency_mistake'] == 'n' (Ground Truth is Fluent)
     """
+    
+    # Check for required column before filtering
+    if 'fluency_mistake' not in df.columns:
+        print("Error: 'fluency_mistake' column required for metric filtering but not found.")
+        return pd.DataFrame() # Return empty DataFrame if column is missing
+
+    # --- APPLY FILTER ---
+    # FIX 2: Filter the DataFrame to include only fluent responses.
+    df_filtered = df[df['fluency_mistake'].astype(str) == 'n'].copy()
+    
+    if df_filtered.empty:
+        print("Warning: Filtered DataFrame is empty after filtering by fluency='n'. Cannot compute metrics.")
+        return pd.DataFrame()
+        
     results = {}
-    y_true = df[label_col].map({"y": 1, "n": 0}).values
-    y_pred = df[pred_col].map({"y": 1, "n": 0}).values
+    
+    # Ensure language column exists for grouping
+    if "language" not in df_filtered.columns and "index" in df_filtered.columns:
+        df_filtered["language"] = df_filtered["index"].astype(str).str[:2]
+    
+    # Map 'y' to 1 and 'n' to 0 for sklearn metrics
+    y_true_all = df_filtered[label_col].map({"y": 1, "n": 0}).values
+    y_pred_all = df_filtered[pred_col].map({"y": 1, "n": 0}).values
 
     # Overall metrics
-    precision, recall, f1, _ = precision_recall_fscore_support(y_true, y_pred, average="binary")
-    acc = accuracy_score(y_true, y_pred)
-    results["overall"] = {"precision": precision, "recall": recall, "f1": f1, "accuracy": acc}
+    precision, recall, f1, _ = precision_recall_fscore_support(y_true_all, y_pred_all, average="binary", zero_division=0)
+    acc = accuracy_score(y_true_all, y_pred_all)
+    results["overall"] = {"precision": precision, "recall": recall, "f1": f1, "accuracy": acc, "support": len(df_filtered)}
 
     # Per-language metrics
-    if "language" in df.columns:
-        for lang, subdf in df.groupby("language"):
-            y_true = subdf[label_col].map({"y": 1, "n": 0}).values
-            y_pred = subdf[pred_col].map({"y": 1, "n": 0}).values
-            precision, recall, f1, _ = precision_recall_fscore_support(y_true, y_pred, average="binary")
-            acc = accuracy_score(y_true, y_pred)
-            results[lang] = {"precision": precision, "recall": recall, "f1": f1, "accuracy": acc}
+    if "language" in df_filtered.columns:
+        for lang, subdf in df_filtered.groupby("language"):
+            if len(subdf) == 0:
+                continue
 
-    return results
+            y_true_lang = subdf[label_col].map({"y": 1, "n": 0}).values
+            y_pred_lang = subdf[pred_col].map({"y": 1, "n": 0}).values
+            
+            precision, recall, f1, _ = precision_recall_fscore_support(y_true_lang, y_pred_lang, average="binary", zero_division=0)
+            acc = accuracy_score(y_true_lang, y_pred_lang)
+            results[lang] = {"precision": precision, "recall": recall, "f1": f1, "accuracy": acc, "support": len(subdf)}
 
-# ---------------- Run ----------------
-if __name__ == "__main__":
-    results = run_inference(data, hallucination_detector, tokenizer, batch_size=4, threshold=0.5)
-    results.to_json("xlm_roberta_hallucination_results.json", orient="records", lines=True)
+    # Return as DataFrame
+    return pd.DataFrame(results).T
 
-    metrics = compute_metrics(results)
-    pd.DataFrame(metrics).T.to_csv("xlm_roberta_hallucination_metrics.csv")
-    print("Saved predictions and metrics.")
-    print(metrics)
+
+df = run_inference(data, hallucination_detector, batch_size=8, threshold=0.5)
+
+df.to_json("xlm_roberta_hallucination_results.json", orient="records", lines=True)
+
+results  = compute_metrics(df, label_col="factual_mistake", pred_col="hallucinated")
+
+results.to_csv("xlm_roberta_hallucination_metrics.csv")
+
