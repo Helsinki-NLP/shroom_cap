@@ -12,7 +12,7 @@ print("Columns:", data.columns)
 # Expecting columns: ["question", "pdf_text", "output_text", "language", "label"]
 
 # ---------------- Text chunking ----------------
-def chunk_text(text, chunk_size=350, overlap=20):
+def chunk_text(text, chunk_size=250, overlap=20):
     """
     Split text into overlapping chunks of tokens (split by whitespace).
     """
