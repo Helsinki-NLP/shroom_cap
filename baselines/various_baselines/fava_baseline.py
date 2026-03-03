@@ -26,7 +26,8 @@ data = pd.read_pickle("multilingual_data_with_labels.pkl")
 print("Columns:", data.columns)
 
 # ---------- Chunking ----------
-def chunk_text(text, chunk_size=350, overlap=20):
+def chunk_text(text, chunk_size=250, overlap=20):
+    
     """
     Split text into overlapping chunks of tokens (split by whitespace).
     """
