@@ -21,7 +21,8 @@ hallucination_detector = pipeline(
     framework='pt', trust_remote_code=True, device='cuda', torch_dtype=torch.float16
 )
 
-def chunk_text(text, chunk_size=350, overlap=20):
+def chunk_text(text, chunk_size=250, overlap=20):
+    
     """
     Split text into overlapping chunks of tokens (split by whitespace).
     """
