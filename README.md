@@ -1,6 +1,6 @@
 # SHROOM-CAP: Shared-task on Hallucinations and Related Observable Overgeneration Mistakes in Crosslingual Analyses of Publications
 
-Public repository for SHROOM-CAP @ CHOMPS 2025 (AACL-IJCNLP, Mumbai, India). The repository contains the clean CAP dataset ([Gamba et el. 2026](https://arxiv.org/abs/2510.22395)) in the `data/release_folder/` to support future research on scientific hallucination detection.
+Public repository for SHROOM-CAP @ CHOMPS 2025 (AACL-IJCNLP, Mumbai, India). The repository contains the clean CAP dataset ([Gamba et al. 2026](https://arxiv.org/abs/2510.22395)) in the `data/release_folder/` to support future research on scientific hallucination detection.
 
 <img src="assets/shroom-cap-blue+text.png" width="200" />
 
